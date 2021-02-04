@@ -18,3 +18,4 @@ codegen-units = 16
 rpath = false
 
 [dependencies]
+egg-mode = { version = "0.15", features = ["rustls"], default-features = false }
