@@ -19,3 +19,4 @@ edition = "2018"
 
 [dependencies]
 egg-mode = { version = "0.15", features = ["rustls"], default-features = false }
+serde_yaml = "0.8.16"
