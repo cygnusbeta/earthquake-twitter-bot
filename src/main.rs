@@ -31,12 +31,16 @@ fn create_token() -> Token {
 }
 
 async fn tweet(str: String, token: &Token) {
+    println!("Tweeting...");
     let post = DraftTweet::new(str.clone()).send(&token).await.unwrap();
+    let user = post.response.user.unwrap();
+    println!("Successfully tweeted:");
+    println!("@{} `{}`: `{}`", &user.screen_name, &user.name, &post.response.text)
 }
 
 fn main() {
     let token = create_token();
-    let future = tweet("test".to_string(), &token);
+    let future = tweet("test2".to_string(), &token);
     let mut rt = Runtime::new().unwrap();
     rt.block_on(future);
 }
