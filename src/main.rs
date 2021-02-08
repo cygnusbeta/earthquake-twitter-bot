@@ -13,7 +13,9 @@ fn read_config() -> HashMap<String, String> {
     map
 }
 
-fn create_token(envs: &HashMap<String, String>) -> Token {
+fn create_token() -> Token {
+    let envs = read_config();
+
     let consumer_key = envs["consumer_key"].clone();
     let consumer_secret = envs["consumer_secret"].clone();
     let access_token_key = envs["access_token_key"].clone();
@@ -28,14 +30,13 @@ fn create_token(envs: &HashMap<String, String>) -> Token {
     token
 }
 
-async fn tweet(str: String, envs: &HashMap<String, String>) {
-    let token = create_token(&envs);
+async fn tweet(str: String, token: &Token) {
     let post = DraftTweet::new(str.clone()).send(&token).await.unwrap();
 }
 
 fn main() {
-    let envs = read_config();
-    let future = tweet("test".to_string(), &envs);
+    let token = create_token();
+    let future = tweet("test".to_string(), &token);
     let mut rt = Runtime::new().unwrap();
     rt.block_on(future);
 }
