@@ -7,8 +7,8 @@ use egg_mode::media::{upload_media, media_types};
 use std::fs::File;
 use std::io::Read;
 
-fn read_config() -> HashMap<String, String> {
-    let s = fs::read_to_string("config/config.yml")
+fn read_config(config_path: String) -> HashMap<String, String> {
+    let s = fs::read_to_string(config_path)
         .expect("Something went wrong reading the file");
     // println!("{}", &s);
     let map: HashMap<String, String> = serde_yaml::from_str(&s).unwrap();
@@ -16,8 +16,8 @@ fn read_config() -> HashMap<String, String> {
     map
 }
 
-fn create_token() -> Token {
-    let envs = read_config();
+fn create_token(config_path: String) -> Token {
+    let envs = read_config(config_path);
 
     let consumer_key = envs["consumer_key"].clone();
     let consumer_secret = envs["consumer_secret"].clone();
@@ -33,6 +33,7 @@ fn create_token() -> Token {
     token
 }
 
+#[allow(dead_code)]
 async fn tweet(str: String, token: &Token) {
     println!("Tweeting...");
     let post = DraftTweet::new(str.clone()).send(&token).await.unwrap();
@@ -65,7 +66,7 @@ async fn tweet_w_img(str: String, img_path: String, token: &Token) {
 }
 
 fn main() {
-    let token = create_token();
+    let token = create_token("config/config.yml".to_string());
     // let future = tweet("test2".to_string(), &token);
     let future = tweet_w_img("test w/img".to_string(), "assets/test/test.png".to_string(), &token);
     let mut rt = Runtime::new().unwrap();
