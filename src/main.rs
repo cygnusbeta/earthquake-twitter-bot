@@ -2,6 +2,7 @@ use std::fs;
 use std::collections::HashMap;
 use egg_mode::tweet::DraftTweet;
 use egg_mode::Token;
+use tokio::runtime::Runtime;
 
 fn read_config() -> HashMap<String, String> {
     let s = fs::read_to_string("config/config.yml")
@@ -29,10 +30,12 @@ fn create_token(envs: &HashMap<String, String>) -> Token {
 
 async fn tweet(envs: &HashMap<String, String>) {
     let token = create_token(&envs);
-    // let post = DraftTweet::new("Hey Twitter!").send(&token).await.unwrap();
+    let post = DraftTweet::new("Hey Twitter!").send(&token).await.unwrap();
 }
 
 fn main() {
     let envs = read_config();
-    tweet(&envs);
+    let future = tweet(&envs);
+    let mut rt = Runtime::new().unwrap();
+    rt.block_on(future);
 }

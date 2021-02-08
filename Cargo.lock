@@ -165,6 +165,7 @@ version = "0.1.0"
 dependencies = [
  "egg-mode",
  "serde_yaml",
+ "tokio",
 ]
 
 [[package]]
