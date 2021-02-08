@@ -7,9 +7,9 @@ use tokio::runtime::Runtime;
 fn read_config() -> HashMap<String, String> {
     let s = fs::read_to_string("config/config.yml")
         .expect("Something went wrong reading the file");
-    println!("{}", &s);
+    // println!("{}", &s);
     let map: HashMap<String, String> = serde_yaml::from_str(&s).unwrap();
-    println!("{:?}", &map);
+    // println!("{:?}", &map);
     map
 }
 
@@ -28,14 +28,14 @@ fn create_token(envs: &HashMap<String, String>) -> Token {
     token
 }
 
-async fn tweet(envs: &HashMap<String, String>) {
+async fn tweet(str: String, envs: &HashMap<String, String>) {
     let token = create_token(&envs);
-    let post = DraftTweet::new("Hey Twitter!").send(&token).await.unwrap();
+    let post = DraftTweet::new(str.clone()).send(&token).await.unwrap();
 }
 
 fn main() {
     let envs = read_config();
-    let future = tweet(&envs);
+    let future = tweet("test".to_string(), &envs);
     let mut rt = Runtime::new().unwrap();
     rt.block_on(future);
 }
