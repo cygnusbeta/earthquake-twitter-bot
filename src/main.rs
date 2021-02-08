@@ -36,7 +36,7 @@ fn create_token(config_path: String) -> Token {
 #[allow(dead_code)]
 async fn tweet(body: String, token: &Token) {
     println!("Tweeting...");
-    let post = DraftTweet::new(body.clone()).send(&token).await.unwrap();
+    let post = DraftTweet::new(body).send(&token).await.unwrap();
     let user = post.response.user.unwrap();
     println!("Successfully tweeted:");
     println!("@{} `{}`: `{}`", &user.screen_name, &user.name, &post.response.text)
@@ -58,7 +58,7 @@ async fn tweet_w_img(body: String, img_path: String, token: &Token) {
     println!("Successfully uploaded.");
 
     println!("Tweeting...");
-    let mut draft = DraftTweet::new(body.clone());
+    let mut draft = DraftTweet::new(body);
     draft.add_media(handle.id);
     let post = draft.send(&token).await.unwrap();
     let user = post.response.user.unwrap();
