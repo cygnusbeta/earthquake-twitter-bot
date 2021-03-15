@@ -20,8 +20,8 @@ fn scrape(url: String, selector: String) -> Result<String, Box<dyn std::error::E
 
 fn get_ri() {
     scrape(
-        "http://evrrss.eri.u-tokyo.ac.jp/db/index.html".to_string(),
-        "body > font > blockquote > h1".to_string()
+        "http://157.80.67.225/".to_string(),
+        "body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(2) > strong:nth-child(1)".to_string()
     ).unwrap();
 }
 
