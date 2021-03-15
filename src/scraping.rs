@@ -1,5 +1,6 @@
 use reqwest;
 use scraper::{Html, Selector};
+use util::Result;
 
 #[path = "util.rs"] mod util;
 
@@ -8,7 +9,7 @@ struct Scraper {
 }
 
 impl Scraper {
-    fn fetch(url: String) -> Result<Self, Box<dyn std::error::Error>> {
+    fn fetch(url: String) -> Result<Self> {
         println!("scraping... {}", &url);
         let resp = reqwest::blocking::get(&url)?;
         println!("-> response: `{}`", &resp.status());
@@ -20,7 +21,7 @@ impl Scraper {
         })
     }
 
-    fn select(&self, selector: String) -> Result<String, Box<dyn std::error::Error>> {
+    fn select(&self, selector: String) -> Result<String> {
         let selector = Selector::parse(selector.as_str()).unwrap();
         let elements = self.document.select(&selector);
         let text = elements.map(|e| format!("{}", e.text().collect::<Vec<_>>().join(" "))).collect::<Vec<_>>().join(" ");

@@ -2,10 +2,12 @@ use std::fs;
 use std::collections::HashMap;
 use egg_mode::tweet::DraftTweet;
 use egg_mode::Token;
-use tokio::runtime::Runtime;
 use egg_mode::media::{upload_media, media_types};
 use std::fs::File;
 use std::io::Read;
+use util::{rt, Result};
+
+#[path = "util.rs"] mod util;
 
 fn read_config(config_path: String) -> HashMap<String, String> {
     let s = fs::read_to_string(config_path)
@@ -51,7 +53,7 @@ fn read_img(img_path: &String) -> Vec<u8> {
     image
 }
 
-async fn tweet_w_img(body: String, img_path: String, token: &Token) {
+async fn tweet_w_img(body: String, img_path: String, token: &Token) -> Result<()> {
     let image_fname = img_path.clone().split('/').collect::<Vec<_>>().last().unwrap().to_string();
     println!("Uploading image: `{}`...", &image_fname);
     let handle = upload_media(&read_img(&img_path), &media_types::image_png(), &token).await.unwrap();
@@ -64,12 +66,13 @@ async fn tweet_w_img(body: String, img_path: String, token: &Token) {
     let user = post.response.user.unwrap();
     println!("Successfully tweeted:");
     println!("@{} `{}`: `{}` (image: `{}`)", &user.screen_name, &user.name, &post.response.text, &image_fname);
+    Ok(())
 }
 
 fn main() {
     let token = create_token("config/config.yml".to_string());
-    // let future = tweet("test2".to_string(), &token);
-    let future = tweet_w_img("test w/img".to_string(), "assets/test/test.png".to_string(), &token);
-    let mut rt = Runtime::new().unwrap();
-    rt.block_on(future);
+    rt().block_on(async {
+        // tweet("test2".to_string(), &token)
+        tweet_w_img("test w/img".to_string(), "assets/test/test.png".to_string(), &token).await.unwrap();
+    });
 }
