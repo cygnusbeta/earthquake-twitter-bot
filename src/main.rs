@@ -36,12 +36,13 @@ fn create_token(config_path: String) -> Token {
 }
 
 #[allow(dead_code)]
-async fn tweet(body: String, token: &Token) {
+async fn tweet(body: String, token: &Token) -> Result<()> {
     println!("Tweeting...");
-    let post = DraftTweet::new(body).send(&token).await.unwrap();
+    let post = DraftTweet::new(body).send(&token).await?;
     let user = post.response.user.unwrap();
     println!("Successfully tweeted:");
-    println!("@{} `{}`: `{}`", &user.screen_name, &user.name, &post.response.text)
+    println!("@{} `{}`: `{}`", &user.screen_name, &user.name, &post.response.text);
+    Ok(())
 }
 
 fn read_img(img_path: &String) -> Vec<u8> {
@@ -56,13 +57,13 @@ fn read_img(img_path: &String) -> Vec<u8> {
 async fn tweet_w_img(body: String, img_path: String, token: &Token) -> Result<()> {
     let image_fname = img_path.clone().split('/').collect::<Vec<_>>().last().unwrap().to_string();
     println!("Uploading image: `{}`...", &image_fname);
-    let handle = upload_media(&read_img(&img_path), &media_types::image_png(), &token).await.unwrap();
+    let handle = upload_media(&read_img(&img_path), &media_types::image_png(), &token).await?;
     println!("Successfully uploaded.");
 
     println!("Tweeting...");
     let mut draft = DraftTweet::new(body);
     draft.add_media(handle.id);
-    let post = draft.send(&token).await.unwrap();
+    let post = draft.send(&token).await?;
     let user = post.response.user.unwrap();
     println!("Successfully tweeted:");
     println!("@{} `{}`: `{}` (image: `{}`)", &user.screen_name, &user.name, &post.response.text, &image_fname);
