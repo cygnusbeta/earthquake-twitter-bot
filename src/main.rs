@@ -73,7 +73,7 @@ async fn tweet_w_img(body: String, img_path: String, token: &Token) -> Result<()
 fn main() {
     let token = create_token("config/config.yml".to_string());
     rt().block_on(async {
-        // tweet("test2".to_string(), &token)
+        // tweet("test2".to_string(), &token).await.unwrap();
         tweet_w_img("test w/img".to_string(), "assets/test/test.png".to_string(), &token).await.unwrap();
     });
 }
