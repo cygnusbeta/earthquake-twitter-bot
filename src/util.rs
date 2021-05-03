@@ -9,6 +9,12 @@ pub struct FileIO {
 }
 
 impl FileIO {
+    pub fn new(fpath: String) -> Self {
+        Self {
+            fpath: fpath
+        }
+    }
+
     #[allow(dead_code)]
     pub fn write(&self, s: String) {
         fs::write(&self.fpath, s).expect("Unable to write file");

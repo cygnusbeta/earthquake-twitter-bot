@@ -26,10 +26,8 @@ fn run() {
         println!("date_last: {}", &date_last)
     } else {
         println!("`date_last.txt` is not found. Creating.");
-        let fileio = FileIO {
-            fpath: "out/date_last.txt".to_string()
-        };
-        fileio.write(date);
+        let f_date_last = FileIO::new("out/date_last.txt".to_string());
+        f_date_last.write(date);
         return;
     }
     let date_last = date_last;
