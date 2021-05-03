@@ -69,8 +69,8 @@ fn try_run() -> Result<()> {
             date
         }
         Err(e) => {
-            println!("`date_last.txt` is not found or corrupted. Initializing.");
-            println!("{}", e);
+            eprintln!("`date_last.txt` is not found or corrupted. Initializing.");
+            eprintln!("{}", e);
             init()?;
             return Err(e);
         }
