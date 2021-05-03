@@ -15,6 +15,16 @@ use scraping::{Scraper};
 #[path = "tweeting.rs"] mod tweeting;
 #[path = "scraping.rs"] mod scraping;
 
+fn init() {
+    let scraper = Scraper::fetch("http://157.80.67.225/".to_string()).unwrap();
+    let date = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(1) > strong".to_string()).unwrap();
+
+    println!("`date_last.txt` initialized.");
+    let f_date_last = FileIO::new("out/date_last.txt".to_string());
+    f_date_last.write(date);
+    return;
+}
+
 fn run() {
     let scraper = Scraper::fetch("http://157.80.67.225/".to_string()).unwrap();
     let date = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(1) > strong".to_string()).unwrap();
@@ -40,6 +50,8 @@ fn run() {
 }
 
 fn main() {
+    init();
+
     let mut sched = JobScheduler::new();
 
     // Run every minute
@@ -48,7 +60,6 @@ fn main() {
     }));
 
     println!("Scheduler started.");
-
     loop {
         sched.tick();
         std::thread::sleep(Duration::from_millis(500));
