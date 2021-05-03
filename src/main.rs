@@ -20,6 +20,35 @@ use std::thread::sleep;
 #[path = "scraping.rs"] mod scraping;
 #[path = "date.rs"] mod date;
 
+fn convert_ri(ri: String) -> Result<String> {
+    let ri = ri.parse::<f64>()?;
+    // ref:
+    // 気象庁 | 計測震度の算出方法
+    // https://www.data.jma.go.jp/svd/eqev/data/kyoshin/kaisetsu/calc_sindo.htm
+    let ri = if ri < 0.5 {
+        "0".to_string()
+    } else if ri < 1.5 {
+        "1".to_string()
+    } else if ri < 2.5 {
+        "2".to_string()
+    } else if ri < 3.5 {
+        "3".to_string()
+    } else if ri < 4.5 {
+        "4".to_string()
+    } else if ri < 5.0 {
+        "5弱".to_string()
+    } else if ri < 5.5 {
+        "5強".to_string()
+    } else if ri < 6.0 {
+        "6弱".to_string()
+    } else if ri < 6.5 {
+        "6強".to_string()
+    } else {
+        "7".to_string()
+    };
+    Ok(ri)
+}
+
 fn write_date_last(date: String) {
     let f_date_last = FileIO::new("out/date_last.txt".to_string());
     f_date_last.write(date);
@@ -40,41 +69,55 @@ fn read_and_parse_file(date: String) -> Result<DateTime<Local>> {
     Ok(date_last)
 }
 
-
-
-fn run() {
-    let mut date_last: DateTime<Local>;
-    match read_and_parse_file("out/date_last.txt".to_string()) {
+fn try_run() -> Result<()> {
+    let date_last = match read_and_parse_file("out/date_last.txt".to_string()) {
         Ok(date) => {
-            date_last = date;
-            println!("date_last: {}", &date_last)
+            println!("date_last: {}", &date);
+            date
         }
         Err(e) => {
             println!("`date_last.txt` is not found or corrupted. Initializing.");
             println!("{}", e);
             init();
-            return;
+            return Err(e);
         }
-    }
-    let date_last = date_last;
+    };
 
     let scraper = Scraper::fetch("http://157.80.67.225/".to_string()).unwrap();
     let date = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(1) > strong".to_string()).unwrap();
     let ri = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(2) > strong:nth-child(1)".to_string()).unwrap();
 
     let date = parse_date(date).unwrap();
-    if date - date_last < chrono::Duration::seconds(60) {
-        println!("Time is not refreshed. Not tweeting.");
+    if date - date_last < chrono::Duration::seconds(1) {
+        // if date on page is not refreshed
+        println!("date on page is not refreshed. Not tweeting.");
     } else {
+        // if date on page is refreshed
         let token = create_token("config/config.yml".to_string());
-        let body = format!("{}: {}", date, ri);
+        let ri = convert_ri(ri)?;
+        /*
+            【地震観測情報】10時28分頃、地震を観測しました。
+
+            観測日時：2021年05月01日 10時28分11秒
+            水戸キャンパス震度：震度1
+         */
+        let body = format!("【地震観測情報】{}頃、地震を観測しました。\n\n観測日時：{}\n水戸キャンパス震度：震度{}",
+                           date.format("%H時%M分"), date.format("%Y年%m月%d日 %H時%M分%S秒"), ri);
         rt().block_on(async {
             // tweet("test2".to_string(), &token).await.unwrap();
             tweet(body, &token).await.unwrap();
         });
 
         let s = date.format("%Y/%m/%d, %H:%M:%S").to_string();
-        write_date_last(s)
+        write_date_last(s);
+    }
+    Ok(())
+}
+
+fn run() {
+    match try_run() {
+        Ok(_) => {},
+        Err(e) => println!("{}", e)
     }
 }
 
