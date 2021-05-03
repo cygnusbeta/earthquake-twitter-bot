@@ -14,4 +14,4 @@ target/
 
 
 /config/config.yml
-/out
+/out/date_last.txt
