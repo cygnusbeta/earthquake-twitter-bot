@@ -3,12 +3,14 @@ use std::fs;
 use std::io::Error;
 use std::fs::OpenOptions;
 use std::io::Write as IoWrite;
+use chrono::{DateTime, FixedOffset};
 
 pub struct FileIO {
     pub fpath: String
 }
 
 impl FileIO {
+    #[allow(dead_code)]
     pub fn new(fpath: String) -> Self {
         Self {
             fpath: fpath
@@ -47,6 +49,7 @@ pub fn rt() -> Runtime {
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
+#[allow(dead_code)]
 pub fn read_file(filename: String) -> Result<String> {
     let res = fs::read_to_string(filename);
     match res {

@@ -29,3 +29,7 @@ chrono = "0.4.19"
 [[bin]]
 name = "scraping"
 path = "src/scraping.rs"
+
+[[bin]]
+name = "date"
+path = "src/date.rs"
