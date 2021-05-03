@@ -72,6 +72,7 @@ pub async fn tweet_w_img(body: String, img_path: String, token: &Token) -> Resul
     Ok(())
 }
 
+#[allow(dead_code)]
 fn main() {
     let token = create_token("config/config.yml".to_string());
     rt().block_on(async {

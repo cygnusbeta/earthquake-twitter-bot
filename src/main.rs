@@ -1,16 +1,8 @@
-use std::fs;
-use std::collections::HashMap;
-use egg_mode::tweet::DraftTweet;
-use egg_mode::Token;
-use egg_mode::media::{upload_media, media_types};
 use job_scheduler::{JobScheduler, Job};
 use std::time::Duration;
-use std::fs::File;
-use std::io::Read;
-use chrono::{DateTime, NaiveDate, NaiveDateTime, NaiveTime, Local};
-use chrono::format::ParseError;
+use chrono::{DateTime, Local};
 use util::{rt, Result, read_file, FileIO};
-use tweeting::{create_token, tweet, tweet_w_img};
+use tweeting::{create_token, tweet};
 use scraping::{Scraper};
 use date::parse_date;
 use std::thread::sleep;
@@ -64,8 +56,8 @@ fn init() -> Result<()> {
     Ok(())
 }
 
-fn read_and_parse_file(date: String) -> Result<DateTime<Local>> {
-    let s = read_file("out/date_last.txt".to_string())?;
+fn read_and_parse_file(fpath: String) -> Result<DateTime<Local>> {
+    let s = read_file(fpath)?;
     let date_last = parse_date(s)?;
     Ok(date_last)
 }

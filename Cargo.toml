@@ -31,5 +31,9 @@ name = "scraping"
 path = "src/scraping.rs"
 
 [[bin]]
+name = "tweeting"
+path = "src/tweeting.rs"
+
+[[bin]]
 name = "date"
 path = "src/date.rs"

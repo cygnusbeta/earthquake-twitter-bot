@@ -1,9 +1,7 @@
 use tokio::runtime::Runtime;
 use std::fs;
-use std::io::Error;
 use std::fs::OpenOptions;
 use std::io::Write as IoWrite;
-use chrono::{DateTime, FixedOffset};
 
 pub struct FileIO {
     pub fpath: String
@@ -50,8 +48,8 @@ pub fn rt() -> Runtime {
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 #[allow(dead_code)]
-pub fn read_file(filename: String) -> Result<String> {
-    let res = fs::read_to_string(filename);
+pub fn read_file(fpath: String) -> Result<String> {
+    let res = fs::read_to_string(fpath);
     match res {
         Ok(s) => { return Ok(s) }
         Err(_) => { return Err("Something went wrong reading the file".into()) }
