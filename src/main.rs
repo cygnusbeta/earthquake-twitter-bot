@@ -48,7 +48,7 @@ fn write_date_last(date: String) {
 }
 
 fn init() -> Result<()> {
-    let scraper = Scraper::fetch("http://157.80.67.225/".to_string())?;
+    let scraper = Scraper::fetch("http://acrs.sci.ibaraki.ac.jp/".to_string())?;
     let date = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(1) > strong".to_string())?;
 
     write_date_last(date);
@@ -76,7 +76,7 @@ fn try_run() -> Result<()> {
         }
     };
 
-    let scraper = Scraper::fetch("http://157.80.67.225/".to_string())?;
+    let scraper = Scraper::fetch("http://acrs.sci.ibaraki.ac.jp/".to_string())?;
     let date = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(1) > strong".to_string())?;
     let ri = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(2) > strong:nth-child(1)".to_string())?;
 

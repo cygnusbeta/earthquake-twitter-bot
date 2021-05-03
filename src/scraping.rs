@@ -33,7 +33,7 @@ impl Scraper {
 
 #[allow(dead_code)]
 fn main() {
-    let scraper = Scraper::fetch("http://157.80.67.225/".to_string()).unwrap();
+    let scraper = Scraper::fetch("http://acrs.sci.ibaraki.ac.jp/".to_string()).unwrap();
     let _date = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(1) > strong".to_string()).unwrap();
     let _ri = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(2) > strong:nth-child(1)".to_string()).unwrap();
 }
