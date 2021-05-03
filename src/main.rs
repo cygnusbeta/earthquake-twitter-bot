@@ -55,12 +55,13 @@ fn write_date_last(date: String) {
     println!("date_last refreshed.");
 }
 
-fn init() {
-    let scraper = Scraper::fetch("http://157.80.67.225/".to_string()).unwrap();
-    let date = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(1) > strong".to_string()).unwrap();
+fn init() -> Result<()> {
+    let scraper = Scraper::fetch("http://157.80.67.225/".to_string())?;
+    let date = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(1) > strong".to_string())?;
 
     write_date_last(date);
     println!("`date_last.txt` initialized.");
+    Ok(())
 }
 
 fn read_and_parse_file(date: String) -> Result<DateTime<Local>> {
@@ -78,16 +79,17 @@ fn try_run() -> Result<()> {
         Err(e) => {
             println!("`date_last.txt` is not found or corrupted. Initializing.");
             println!("{}", e);
-            init();
+            init()?;
             return Err(e);
         }
     };
 
-    let scraper = Scraper::fetch("http://157.80.67.225/".to_string()).unwrap();
-    let date = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(1) > strong".to_string()).unwrap();
-    let ri = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(2) > strong:nth-child(1)".to_string()).unwrap();
+    let scraper = Scraper::fetch("http://157.80.67.225/".to_string())?;
+    let date = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(1) > strong".to_string())?;
+    let ri = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(2) > strong:nth-child(1)".to_string())?;
 
-    let date = parse_date(date).unwrap();
+    let date = parse_date(date)?;
+    println!("date on page: {}", date);
     if date - date_last < chrono::Duration::seconds(1) {
         // if date on page is not refreshed
         println!("date on page is not refreshed. Not tweeting.");
@@ -122,7 +124,7 @@ fn run() {
 }
 
 fn main() {
-    init();
+    init().unwrap();
     println!("Wating for 1 minute.");
     sleep(Duration::from_secs(60));
 
