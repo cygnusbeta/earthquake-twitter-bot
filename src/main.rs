@@ -7,7 +7,7 @@ use job_scheduler::{JobScheduler, Job};
 use std::time::Duration;
 use std::fs::File;
 use std::io::Read;
-use util::{rt, Result};
+use util::{rt, Result, read_file, FileIO};
 use tweeting::{create_token, tweet, tweet_w_img};
 use scraping::{Scraper};
 
@@ -19,6 +19,20 @@ fn run() {
     let scraper = Scraper::fetch("http://157.80.67.225/".to_string()).unwrap();
     let date = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(1) > strong".to_string()).unwrap();
     let ri = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(2) > strong:nth-child(1)".to_string()).unwrap();
+
+    let mut date_last = "".to_string();
+    if let Ok(s) = read_file("out/date_last.txt".to_string()) {
+        date_last = s;
+        println!("date_last: {}", &date_last)
+    } else {
+        println!("`date_last.txt` is not found. Creating.");
+        let fileio = FileIO {
+            fpath: "out/date_last.txt".to_string()
+        };
+        fileio.write(date);
+        return;
+    }
+    let date_last = date_last;
 
     // let token = create_token("config/config.yml".to_string());
     // rt().block_on(async {
@@ -34,6 +48,8 @@ fn main() {
     sched.add(Job::new("0 * * * * *".parse().unwrap(), || {
         run();
     }));
+
+    println!("Scheduler started.");
 
     loop {
         sched.tick();
