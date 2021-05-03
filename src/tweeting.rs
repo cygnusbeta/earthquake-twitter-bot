@@ -18,7 +18,7 @@ fn read_config(config_path: String) -> HashMap<String, String> {
     map
 }
 
-fn create_token(config_path: String) -> Token {
+pub fn create_token(config_path: String) -> Token {
     let envs = read_config(config_path);
 
     let consumer_key = envs["consumer_key"].clone();
@@ -36,7 +36,7 @@ fn create_token(config_path: String) -> Token {
 }
 
 #[allow(dead_code)]
-async fn tweet(body: String, token: &Token) -> Result<()> {
+pub async fn tweet(body: String, token: &Token) -> Result<()> {
     println!("Tweeting...");
     let post = DraftTweet::new(body).send(&token).await?;
     let user = post.response.user.unwrap();
@@ -54,7 +54,7 @@ fn read_img(img_path: &String) -> Vec<u8> {
     image
 }
 
-async fn tweet_w_img(body: String, img_path: String, token: &Token) -> Result<()> {
+pub async fn tweet_w_img(body: String, img_path: String, token: &Token) -> Result<()> {
     let image_fname = img_path.clone().split('/').collect::<Vec<_>>().last().unwrap().to_string();
     println!("Uploading image: `{}`...", &image_fname);
     let handle = upload_media(&read_img(&img_path), &media_types::image_png(), &token).await?;
