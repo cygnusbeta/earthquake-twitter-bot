@@ -45,6 +45,7 @@ pub async fn tweet(body: String, token: &Token) -> Result<()> {
     Ok(())
 }
 
+#[allow(dead_code)]
 fn read_img(img_path: &String) -> Vec<u8> {
     let mut image = Vec::new();
     {
@@ -54,6 +55,7 @@ fn read_img(img_path: &String) -> Vec<u8> {
     image
 }
 
+#[allow(dead_code)]
 pub async fn tweet_w_img(body: String, img_path: String, token: &Token) -> Result<()> {
     let image_fname = img_path.clone().split('/').collect::<Vec<_>>().last().unwrap().to_string();
     println!("Uploading image: `{}`...", &image_fname);

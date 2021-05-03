@@ -12,6 +12,7 @@ pub fn parse_date(date: String) -> Result<DateTime<Local>> {
     Ok(custom)
 }
 
+#[allow(dead_code)]
 fn main() {
     parse_date("2021/05/01, 10:28:11".to_string()).unwrap();
 }
