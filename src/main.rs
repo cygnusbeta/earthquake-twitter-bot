@@ -113,7 +113,7 @@ fn run() {
     println!("[{}] Cron job started.", Local::now().format("%Y/%m/%d %H:%M:%S").to_string());
     match try_run() {
         Ok(_) => {},
-        Err(e) => println!("{}", e)
+        Err(e) => eprintln!("{}", e)
     }
     println!("[{}] Cron job ended.", Local::now().format("%Y/%m/%d %H:%M:%S").to_string());
 }
