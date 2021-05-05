@@ -111,9 +111,8 @@ fn try_run() -> Result<()> {
 
 fn run() {
     println!("[{}] Cron job started.", Local::now().format("%Y/%m/%d %H:%M:%S").to_string());
-    match try_run() {
-        Ok(_) => {},
-        Err(e) => eprintln!("{}", e)
+    if let Err(e) = try_run() {
+        eprintln!("{}", e)
     }
     println!("[{}] Cron job ended.", Local::now().format("%Y/%m/%d %H:%M:%S").to_string());
 }
