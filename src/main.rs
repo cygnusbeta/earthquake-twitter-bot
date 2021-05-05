@@ -84,12 +84,11 @@ fn try_run() -> Result<()> {
     println!("date on page: {}", date);
     if date - date_last < chrono::Duration::seconds(1) {
         // if date on page is not refreshed
-        println!("date on page == `date_last.txt`");
-        println!("Not tweeting.");
+        println!("date on page == `date_last.txt`. Not tweeting.");
     } else {
         // if date on page is refreshed
         println!("date on page != `date_last.txt`");
-        
+
         // Save date on page to `date_last.txt`
         let s = date.format("%Y/%m/%d, %H:%M:%S").to_string();
         write_date_last(s);
@@ -111,10 +110,12 @@ fn try_run() -> Result<()> {
 }
 
 fn run() {
+    println!("[{}] Cron job started.", Local::now().format("%Y/%m/%d %H:%M:%S").to_string());
     match try_run() {
         Ok(_) => {},
         Err(e) => println!("{}", e)
     }
+    println!("Job ended.");
 }
 
 fn main() {
