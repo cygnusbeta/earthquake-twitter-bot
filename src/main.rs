@@ -97,13 +97,13 @@ fn try_run() -> Result<()> {
         let token = create_token("config/config.yml".to_string());
         let ri = convert_ri(ri)?;
         /*
-            【地震観測情報】01日 10時28分頃、地震を観測しました。
+            【地震観測情報】10時28分頃、地震を観測しました。
 
             観測日時：2021年05月01日 10時28分11秒
             水戸キャンパス震度：震度1
          */
         let body = format!("【地震観測情報】{}頃、地震を観測しました。\n\n観測日時：{}\n水戸キャンパス震度：震度{}",
-                           date.format("%d日　%H時%M分"), date.format("%Y年%m月%d日 %H時%M分%S秒"), ri);
+                           date.format("%H時%M分"), date.format("%Y年%m月%d日 %H時%M分%S秒"), ri);
         tweet_await(body, &token)?;
     }
     Ok(())
