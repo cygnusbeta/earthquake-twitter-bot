@@ -65,7 +65,7 @@ fn read_and_parse_file(fpath: String) -> Result<DateTime<Local>> {
 fn try_run() -> Result<()> {
     let date_last = match read_and_parse_file("out/date_last.txt".to_string()) {
         Ok(date) => {
-            println!("date_last: {}", &date);
+            println!("date_last: {}", date.format("%Y/%m/%d %H:%M:%S").to_string());
             date
         }
         Err(e) => {
@@ -81,7 +81,7 @@ fn try_run() -> Result<()> {
     let ri = scraper.select("body > table > tbody > tr > td > div:nth-child(3) > ul > li:nth-child(2) > strong:nth-child(1)".to_string())?;
 
     let date = parse_date(date)?;
-    println!("date on page: {}", date);
+    println!("date on page: {}", date.format("%Y/%m/%d %H:%M:%S").to_string());
     if date - date_last < chrono::Duration::seconds(1) {
         // if date on page is not refreshed
         println!("date on page == `date_last.txt`. Not tweeting.");
