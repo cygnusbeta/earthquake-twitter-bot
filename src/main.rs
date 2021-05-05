@@ -115,7 +115,7 @@ fn run() {
         Ok(_) => {},
         Err(e) => println!("{}", e)
     }
-    println!("Job ended.");
+    println!("[{}] Cron job ended.", Local::now().format("%Y/%m/%d %H:%M:%S").to_string());
 }
 
 fn main() {
