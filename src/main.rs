@@ -44,7 +44,7 @@ fn convert_ri(ri: String) -> Result<String> {
 fn write_date_last(date: String) {
     let f_date_last = FileIO::new("out/date_last.txt".to_string());
     f_date_last.write(date);
-    println!("date_last refreshed.");
+    println!("Saved date on page to `date_last.txt`");
 }
 
 fn init() -> Result<()> {
