@@ -133,6 +133,6 @@ fn main() {
     println!("Scheduler started.");
     loop {
         sched.tick();
-        std::thread::sleep(Duration::from_millis(500));
+        std::thread::sleep(Duration::from_millis(10 * 1000));
     }
 }
