@@ -4,6 +4,8 @@ use chrono::{DateTime, Local};
 #[path = "util.rs"] mod util;
 
 pub fn parse_date(date: String) -> Result<DateTime<Local>> {
+    let tz_local = Local::now().format("%z");
+    println!("{}", tz_local);
     let date = format!("{} +0900", date);
     // let custom = DateTime::parse_from_str("5.8.1994 8:00 am +0000", "%d.%m.%Y %H:%M %P %z")?;
     let custom = DateTime::parse_from_str(date.as_str(), "%Y/%m/%d, %H:%M:%S %z")?;
