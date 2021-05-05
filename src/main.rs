@@ -1,8 +1,8 @@
 use job_scheduler::{JobScheduler, Job};
 use std::time::Duration;
 use chrono::{DateTime, Local};
-use util::{rt, Result, read_file, FileIO};
-use tweeting::{create_token, tweet};
+use util::{Result, read_file, FileIO};
+use tweeting::{create_token, tweet_await};
 use scraping::{Scraper};
 use date::parse_date;
 use std::thread::sleep;
@@ -97,10 +97,7 @@ fn try_run() -> Result<()> {
          */
         let body = format!("【地震観測情報】{}頃、地震を観測しました。\n\n観測日時：{}\n水戸キャンパス震度：震度{}",
                            date.format("%H時%M分"), date.format("%Y年%m月%d日 %H時%M分%S秒"), ri);
-        rt().block_on(async {
-            // tweet("test2".to_string(), &token).await.unwrap();
-            tweet(body, &token).await.unwrap();
-        });
+        tweet_await(body, &token)?;
 
         let s = date.format("%Y/%m/%d, %H:%M:%S").to_string();
         write_date_last(s);

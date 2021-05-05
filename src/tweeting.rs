@@ -46,6 +46,20 @@ pub async fn tweet(body: String, token: &Token) -> Result<()> {
 }
 
 #[allow(dead_code)]
+pub fn tweet_await(body: String, token: &Token) -> Result<()> {
+    let res = rt().block_on(async {
+        // tweet("test2".to_string(), &token).await.unwrap();
+        let res = tweet(body, &token).await;
+        let res = match res {
+            Ok(_) => Ok(()),
+            Err(e) => Err(e)
+        };
+        res
+    });
+    res
+}
+
+#[allow(dead_code)]
 fn read_img(img_path: &String) -> Vec<u8> {
     let mut image = Vec::new();
     {
@@ -70,6 +84,20 @@ pub async fn tweet_w_img(body: String, img_path: String, token: &Token) -> Resul
     println!("Successfully tweeted:");
     println!("@{} `{}`: `{}` (image: `{}`)", &user.screen_name, &user.name, &post.response.text, &image_fname);
     Ok(())
+}
+
+#[allow(dead_code)]
+pub fn tweet_w_img_await(body: String, img_path: String, token: &Token) -> Result<()> {
+    let res = rt().block_on(async {
+        // tweet("test2".to_string(), &token).await.unwrap();
+        let res = tweet_w_img(body, img_path, &token).await;
+        let res = match res {
+            Ok(_) => Ok(()),
+            Err(e) => Err(e)
+        };
+        res
+    });
+    res
 }
 
 #[allow(dead_code)]
