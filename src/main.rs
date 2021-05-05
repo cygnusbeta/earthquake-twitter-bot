@@ -87,6 +87,11 @@ fn try_run() -> Result<()> {
         println!("date on page is not refreshed. Not tweeting.");
     } else {
         // if date on page is refreshed
+        // Save date on page to `date_last.txt`
+        let s = date.format("%Y/%m/%d, %H:%M:%S").to_string();
+        write_date_last(s);
+
+        // Tweet
         let token = create_token("config/config.yml".to_string());
         let ri = convert_ri(ri)?;
         /*
@@ -98,9 +103,6 @@ fn try_run() -> Result<()> {
         let body = format!("【地震観測情報】{}頃、地震を観測しました。\n\n観測日時：{}\n水戸キャンパス震度：震度{}",
                            date.format("%H時%M分"), date.format("%Y年%m月%d日 %H時%M分%S秒"), ri);
         tweet_await(body, &token)?;
-
-        let s = date.format("%Y/%m/%d, %H:%M:%S").to_string();
-        write_date_last(s);
     }
     Ok(())
 }
