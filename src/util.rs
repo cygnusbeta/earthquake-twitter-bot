@@ -56,6 +56,7 @@ pub fn read_file(fpath: String) -> Result<String> {
     }
 }
 
+
 // use: err("custome name error".to_string());
 #[allow(dead_code)]
 pub fn err<T>(str: String) -> std::result::Result<T, std::io::Error> {
@@ -68,13 +69,26 @@ pub fn err_custom<T>(str: String, errorkind: std::io::ErrorKind) -> std::result:
     Err(std::io::Error::new(errorkind, str))
 }
 
-// assert_err(condition, error_msg)?;
-// use: assert_err(condition, "invalid data")?;
+// assert_err_msg(condition, error_msg)?;
+// use: assert_err_msg(condition, "invalid data")?;
 #[allow(dead_code)]
-pub fn assert_err<T: std::fmt::Display>(condition: bool, error_msg: T) -> std::result::Result<T, std::io::Error> {
+pub fn assert_err_msg<T: std::fmt::Display + std::default::Default>(condition: bool, error_msg: T) -> std::result::Result<T, std::io::Error> {
     if condition {
-        Ok(error_msg)
+        let res: T = Default::default();
+        Ok(res)
     } else {
         Err(std::io::Error::new(std::io::ErrorKind::Other, format!("assertion failed: {}", error_msg)))
+    }
+}
+
+// assert_err(condition)?;
+// use: assert_err(condition)?;
+#[allow(dead_code)]
+pub fn assert_err<T: std::default::Default>(condition: bool) -> std::result::Result<T, std::io::Error> {
+    if condition {
+        let res: T = Default::default();
+        Ok(res)
+    } else {
+        Err(std::io::Error::new(std::io::ErrorKind::Other, format!("assertion failed")))
     }
 }
