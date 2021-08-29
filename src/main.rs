@@ -118,7 +118,12 @@ fn run() {
 }
 
 fn main() {
-    init().unwrap();
+    // init().unwrap();
+    match init() {
+        Ok(_) => {},
+        Err(e) => eprintln!("{}", e)
+    };
+    
     println!("Wating for 1 minute.");
     sleep(Duration::from_secs(60));
 
