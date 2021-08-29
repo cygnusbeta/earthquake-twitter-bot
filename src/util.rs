@@ -55,3 +55,26 @@ pub fn read_file(fpath: String) -> Result<String> {
         Err(_) => { return Err("Something went wrong reading the file".into()) }
     }
 }
+
+// use: err("custome name error".to_string());
+#[allow(dead_code)]
+pub fn err<T>(str: String) -> std::result::Result<T, std::io::Error> {
+    Err(std::io::Error::new(std::io::ErrorKind::Other, str))
+}
+
+// use: err_custom("custome name error".to_string(), ErrorKind::InvalidData);
+#[allow(dead_code)]
+pub fn err_custom<T>(str: String, errorkind: std::io::ErrorKind) -> std::result::Result<T, std::io::Error> {
+    Err(std::io::Error::new(errorkind, str))
+}
+
+// assert_err(condition, error_msg)?;
+// use: assert_err(condition, "invalid data")?;
+#[allow(dead_code)]
+pub fn assert_err<T: std::fmt::Display>(condition: bool, error_msg: T) -> std::result::Result<T, std::io::Error> {
+    if condition {
+        Ok(error_msg)
+    } else {
+        Err(std::io::Error::new(std::io::ErrorKind::Other, format!("assertion failed: {}", error_msg)))
+    }
+}

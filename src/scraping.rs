@@ -1,6 +1,6 @@
 use reqwest;
 use scraper::{Html, Selector};
-use util::Result;
+use util::{Result, assert_err};
 
 #[path = "util.rs"] mod util;
 
@@ -13,7 +13,7 @@ impl Scraper {
         println!("scraping... {}", &url);
         let resp = reqwest::blocking::get(&url)?;
         println!("-> response: `{}`", &resp.status());
-        assert!(resp.status().is_success());
+        assert_err(resp.status().is_success(), "`resp.status()` is not 200")?;
         let body = resp.text()?;
         let document = Html::parse_document(&body);
         Ok(Self {
@@ -25,7 +25,7 @@ impl Scraper {
         let selector = Selector::parse(selector.as_str()).unwrap();
         let elements = self.document.select(&selector);
         let text = elements.map(|e| format!("{}", e.text().collect::<Vec<_>>().join(" "))).collect::<Vec<_>>().join(" ");
-        assert!(!&text.is_empty(), "selector not found");
+        assert_err(!text.is_empty(), "selector not found")?;
         println!("   scraped text: `{}`", &text);
         Ok(text)
     }
