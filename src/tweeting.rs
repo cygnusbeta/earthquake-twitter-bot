@@ -8,6 +8,7 @@ use std::io::Read;
 use util::{rt, Result};
 use twitter_v2::TwitterApi;
 use twitter_v2::authorization::Oauth1aToken;
+// use Oauth1aToken as Token;
 
 #[path = "util.rs"] mod util;
 
@@ -36,35 +37,38 @@ pub fn create_token(config_path: String) -> Oauth1aToken {
 pub async fn tweet(body: String, token: &Oauth1aToken) -> Result<()> {
     println!("Tweeting...");
 
-    let tweet = TwitterApi::new(token.clone())
+    let response = TwitterApi::new(token.clone())
         .post_tweet()
         .text(body)
         .send()
-        .await?
-        .into_data()
-        .expect("this tweet should exist");
-    // let user = post.response.user.unwrap();
+        .await?;
 
+    // let user = post.response.user.unwrap();
     // println!("Successfully tweeted:");
     // println!("@{} `{}`: `{}`", &user.screen_name, &user.name, &tweet.text);
-    println!("Successfully tweeted: `{}`", &tweet.text);
+
+    let tweet_opt = response.into_data();
+    if let Some(tweet) = tweet_opt {
+        println!("Successfully tweeted: `{}`", &tweet.text);
+    }
+
     // println!("https://twitter.com/{}/status/{}", , tweet.id);
     Ok(())
 }
 
-#[allow(dead_code)]
-pub fn tweet_await(body: String, token: &Oauth1aToken) -> Result<()> {
-    let res = rt().block_on(async {
-        // tweet("test2".to_string(), &token).await.unwrap();
-        let res = tweet(body, &token).await;
-        let res = match res {
-            Ok(_) => Ok(()),
-            Err(e) => Err(e)
-        };
-        res
-    });
-    res
-}
+// #[allow(dead_code)]
+// pub fn tweet_await(body: String, token: &Token) -> Result<()> {
+//     let res = rt().block_on(async {
+//         // tweet("test2".to_string(), &token).await.unwrap();
+//         let res = tweet(body, &token).await;
+//         let res = match res {
+//             Ok(_) => Ok(()),
+//             Err(e) => Err(e)
+//         };
+//         res
+//     });
+//     res
+// }
 
 #[allow(dead_code)]
 fn read_img(img_path: &String) -> Vec<u8> {
