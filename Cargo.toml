@@ -7,7 +7,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [profile.dev]
-opt-level = 3
+opt-level = 0
 debug = true
 debug-assertions = false
 overflow-checks = true
@@ -20,11 +20,12 @@ rpath = false
 [dependencies]
 egg-mode = { version = "0.15", features = ["rustls"], default-features = false }
 serde_yaml = "0.8.16"
-tokio = "0.2.25"
+tokio = "1.28.1"
 reqwest = { version = "0.11", default-features = false, features = ["rustls-tls", "blocking"] }
 scraper = "0.12.0"
 job_scheduler = "1.2.1"
 chrono = "0.4.19"
+twitter-v2 = "0.1.8"
 
 [[bin]]
 name = "scraping"

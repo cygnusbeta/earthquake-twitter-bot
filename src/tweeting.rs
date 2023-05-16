@@ -6,6 +6,8 @@ use egg_mode::media::{upload_media, media_types};
 use std::fs::File;
 use std::io::Read;
 use util::{rt, Result};
+use twitter_v2::TwitterApi;
+use twitter_v2::authorization::Oauth1aToken;
 
 #[path = "util.rs"] mod util;
 
@@ -18,35 +20,40 @@ fn read_config(config_path: String) -> HashMap<String, String> {
     map
 }
 
-pub fn create_token(config_path: String) -> Token {
+pub fn create_token(config_path: String) -> Oauth1aToken {
     let envs = read_config(config_path);
 
     let consumer_key = envs["consumer_key"].clone();
     let consumer_secret = envs["consumer_secret"].clone();
     let access_token_key = envs["access_token_key"].clone();
     let access_token_secret = envs["access_token_secret"].clone();
-
-    let con_token = egg_mode::KeyPair::new(consumer_key, consumer_secret);
-    let access_token = egg_mode::KeyPair::new(access_token_key, access_token_secret);
-    let token = egg_mode::Token::Access {
-        consumer: con_token,
-        access: access_token,
-    };
+    let token: Oauth1aToken = Oauth1aToken::new(consumer_key, consumer_secret,
+                                                access_token_key, access_token_secret);
     token
 }
 
 #[allow(dead_code)]
-pub async fn tweet(body: String, token: &Token) -> Result<()> {
+pub async fn tweet(body: String, token: &Oauth1aToken) -> Result<()> {
     println!("Tweeting...");
-    let post = DraftTweet::new(body).send(&token).await?;
-    let user = post.response.user.unwrap();
-    println!("Successfully tweeted:");
-    println!("@{} `{}`: `{}`", &user.screen_name, &user.name, &post.response.text);
+
+    let tweet = TwitterApi::new(token.clone())
+        .post_tweet()
+        .text(body)
+        .send()
+        .await?
+        .into_data()
+        .expect("this tweet should exist");
+    // let user = post.response.user.unwrap();
+
+    // println!("Successfully tweeted:");
+    // println!("@{} `{}`: `{}`", &user.screen_name, &user.name, &tweet.text);
+    println!("Successfully tweeted: `{}`", &tweet.text);
+    // println!("https://twitter.com/{}/status/{}", , tweet.id);
     Ok(())
 }
 
 #[allow(dead_code)]
-pub fn tweet_await(body: String, token: &Token) -> Result<()> {
+pub fn tweet_await(body: String, token: &Oauth1aToken) -> Result<()> {
     let res = rt().block_on(async {
         // tweet("test2".to_string(), &token).await.unwrap();
         let res = tweet(body, &token).await;
@@ -104,7 +111,7 @@ pub fn tweet_w_img_await(body: String, img_path: String, token: &Token) -> Resul
 fn main() {
     let token = create_token("config/config.yml".to_string());
     rt().block_on(async {
-        // tweet("test2".to_string(), &token).await.unwrap();
-        tweet_w_img("test w/img".to_string(), "assets/test/test.png".to_string(), &token).await.unwrap();
+        tweet("テストツイート（bot のメンテナンス中です）".to_string(), &token).await.unwrap();
+        // tweet_w_img("test w/img".to_string(), "assets/test/test.png".to_string(), &token).await.unwrap();
     });
 }
